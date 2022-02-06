@@ -1,4 +1,4 @@
 import { createApp } from 'vue'
-import App from './App.vue'
+import SnakeGame from './SnakeGame.vue'
 
-createApp(App).mount('#app')
+createApp(SnakeGame).mount('#app')
