@@ -6,12 +6,12 @@
 </template>
 
 <script>
-import Tablero from './Tablero.vue'
-import Serpiente from './Serpiente.vue'
-import Comida from './Comida.vue'
+import Tablero from './components/Tablero.vue'
+import Serpiente from './components/Serpiente.vue'
+import Comida from './components/Comida.vue'
 
 export default {
-  name: 'Snake',
+  name: 'SnakeGame',
   components: {
     Tablero, Serpiente, Comida
   },
