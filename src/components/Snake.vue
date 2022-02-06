@@ -1,8 +1,8 @@
 <template>
   <canvas id="canvas"></canvas>
-  <Tablero :estado="estado" :canvas="canvas" :repintar="repintar" :anchoTablero="anchoTablero" :altoTablero="altoTablero" @cambiarEstado="cambiarEstado" @cambiarDif="cambiarDif"/>
-  <Serpiente :estado="estado" :canvas="canvas" :repintar="repintar" :anchoTablero="anchoTablero" :altoTablero="altoTablero" :difX="difX" :difY="difY" :anchoPixelSerpiente="anchoPixelSerpiente" :comida="comida" @posicionSerpiente="posicionSerpiente"/>
-  <Comida :estado="estado" :canvas="canvas" :repintar="repintar" :anchoTablero="anchoTablero" :altoTablero="altoTablero" :difX="difX" :difY="difY" :anchoPixelSerpiente="anchoPixelSerpiente" :serpiente="serpiente" @posicionComida="posicionComida"/>
+  <Tablero :estado="estado" :canvas="canvas" :repintar="repintar" :infoZonaJuego="infoZonaJuego" @cambiarEstado="cambiarEstado" @cambiarDif="cambiarDif"/>
+  <Serpiente :estado="estado" :canvas="canvas" :repintar="repintar" :infoZonaJuego="infoZonaJuego" :comida="comida" @posicionSerpiente="posicionSerpiente"/>
+  <Comida :estado="estado" :canvas="canvas" :repintar="repintar" :infoZonaJuego="infoZonaJuego" :serpiente="serpiente" @posicionComida="posicionComida"/>
 </template>
 
 <script>
@@ -19,13 +19,15 @@ export default {
     return {
       canvas: null,
       refresco: 20,
-      anchoPixelSerpiente: 4,
-      anchoTablero: 400,
-      altoTablero: 200,
+      infoZonaJuego: {
+        anchoPixelSerpiente: 4,
+        anchoTablero: 400,
+        altoTablero: 200,
+        difX: 0,
+        difY: 0,
+      },
       estado: '', // '' - Sin empezar, 'iniciando' - Cuenta atrás, 'jugando' - Jugando
       repintar: 1,
-      difX: 0,
-      difY: 0,
       comida: null,
       serpiente: [[11, 10], [25, 25]],
     };
@@ -47,8 +49,8 @@ export default {
       this.estado = nuevoEstado;
     },
     cambiarDif(difX, difY) {
-      this.difX = difX;
-      this.difY = difY;
+      this.infoZonaJuego.difX = difX;
+      this.infoZonaJuego.difY = difY;
     },
     prepararCanvas() {
       var c = document.getElementById("canvas");

@@ -14,28 +14,11 @@ export default {
       type: String,
       required: true,
     },
-    difX: {
-      type: Number,
-      required: true,
-    },
-    difY: {
-      type: Number,
-      required: true,
-    },
     repintar: {
       type: Number,
       required: true,
     },
-    anchoTablero: {
-      type: Number,
-      required: true,
-    },
-    altoTablero: {
-      type: Number,
-      required: true,
-    },
-    anchoPixelSerpiente: {
-      type: Number,
+    infoZonaJuego: {
       required: true,
     },
     serpiente: {
@@ -75,7 +58,7 @@ export default {
       this.$emit("posicionComida", this.posicionComida);
     },
     buscarHuecoLibreComidaX() {
-      let posXComida = this.rand(0, (this.anchoTablero / this.anchoPixelSerpiente));
+      let posXComida = this.rand(0, (this.infoZonaJuego.anchoTablero / this.infoZonaJuego.anchoPixelSerpiente));
       let posXSerpiente = this.serpiente[0];
       if (posXSerpiente.includes(posXComida)) {
         return this.buscarHuecoLibreComidaX();
@@ -83,7 +66,7 @@ export default {
       return posXComida;
     },
     buscarHuecoLibreComidaY() {
-      let posYComida = this.rand(0, (this.altoTablero / this.anchoPixelSerpiente));
+      let posYComida = this.rand(0, (this.infoZonaJuego.altoTablero / this.infoZonaJuego.anchoPixelSerpiente));
       let posYSerpiente = this.serpiente[1];
       if (posYSerpiente.includes(posYComida)) {
         return this.buscarHuecoLibreComidaY();
@@ -95,7 +78,9 @@ export default {
     },
     pintar() {
       this.ctx.beginPath();
-      this.ctx.fillRect(this.difX + (this.posicionComida[0] * this.anchoPixelSerpiente), this.difY + (this.posicionComida[1] * this.anchoPixelSerpiente), this.anchoPixelSerpiente, this.anchoPixelSerpiente);
+      let posXComida = this.infoZonaJuego.difX + (this.posicionComida[0] * this.infoZonaJuego.anchoPixelSerpiente);
+      let posYComida = this.infoZonaJuego.difY + (this.posicionComida[1] * this.infoZonaJuego.anchoPixelSerpiente);
+      this.ctx.fillRect(posXComida, posYComida, this.infoZonaJuego.anchoPixelSerpiente, this.infoZonaJuego.anchoPixelSerpiente);
       this.ctx.stroke();
     },
   },

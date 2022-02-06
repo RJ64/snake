@@ -18,12 +18,7 @@ export default {
       type: Number,
       required: true,
     },
-    anchoTablero: {
-      type: Number,
-      required: true,
-    },
-    altoTablero: {
-      type: Number,
+    infoZonaJuego: {
       required: true,
     },
   },
@@ -37,12 +32,12 @@ export default {
       return this.canvas;
     },
     posX() {
-      let pos = ((window.innerWidth - this.anchoTablero) / 2);
+      let pos = ((window.innerWidth - this.infoZonaJuego.anchoTablero) / 2);
       this.$emit("cambiarDif", pos, this.posY);
       return pos;
     },
     posY() {
-      let pos = ((window.innerHeight - this.altoTablero) / 2);
+      let pos = ((window.innerHeight - this.infoZonaJuego.altoTablero) / 2);
       this.$emit("cambiarDif", this.posX, pos);
       return pos;
     },
@@ -66,7 +61,7 @@ export default {
   methods: {
     pintarTablero() {
       this.ctx.beginPath();
-      this.ctx.rect(this.posX, this.posY, this.anchoTablero, this.altoTablero);
+      this.ctx.rect(this.posX, this.posY, this.infoZonaJuego.anchoTablero, this.infoZonaJuego.altoTablero);
       this.ctx.stroke();
     },
     pintarNumeroCuentaAtras(numero) {

@@ -18,24 +18,7 @@ export default {
       type: Number,
       required: true,
     },
-    difX: {
-      type: Number,
-      required: true,
-    },
-    difY: {
-      type: Number,
-      required: true,
-    },
-    anchoTablero: {
-      type: Number,
-      required: true,
-    },
-    altoTablero: {
-      type: Number,
-      required: true,
-    },
-    anchoPixelSerpiente: {
-      type: Number,
+    infoZonaJuego: {
       required: true,
     },
     comida: {
@@ -77,7 +60,9 @@ export default {
   },
   methods: {
     pintarPunto(posX, posY) {
-      this.ctx.fillRect(this.difX + (posX * this.anchoPixelSerpiente), this.difY + (posY * this.anchoPixelSerpiente), this.anchoPixelSerpiente, this.anchoPixelSerpiente);
+      let posXPunto = this.infoZonaJuego.difX + (posX * this.infoZonaJuego.anchoPixelSerpiente);
+      let posYPunto = this.infoZonaJuego.difY + (posY * this.infoZonaJuego.anchoPixelSerpiente);
+      this.ctx.fillRect(posXPunto, posYPunto, this.infoZonaJuego.anchoPixelSerpiente, this.infoZonaJuego.anchoPixelSerpiente);
     },
     pintar() {
       this.ctx.beginPath();
@@ -122,7 +107,6 @@ console.log('FIN')
 
         this.posicionesX = posicionesXTemporales;
         this.posicionesY = posicionesYTemporales;
-console.log(this.posicionesY[0])
 
         this.$emit("posicionSerpiente", [this.posicionesX, this.posicionesY]);
 
@@ -143,7 +127,7 @@ console.log(this.posicionesY[0])
           return true;
         }
         // Pared derecha
-        if (posXCabeza >= (this.anchoTablero / this.anchoPixelSerpiente)) {
+        if (posXCabeza >= (this.infoZonaJuego.anchoTablero / this.infoZonaJuego.anchoPixelSerpiente)) {
           return true;
         }
         // Pared superior
@@ -151,7 +135,7 @@ console.log(this.posicionesY[0])
           return true;
         }
         // Pared inferior
-        if (posYCabeza >= (this.altoTablero / this.anchoPixelSerpiente)) {
+        if (posYCabeza >= (this.infoZonaJuego.altoTablero / this.infoZonaJuego.anchoPixelSerpiente)) {
           return true;
         }
 
