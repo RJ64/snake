@@ -20,6 +20,10 @@ export default {
     comida: {
       required: true,
     },
+    teclasPulsadas: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -27,12 +31,6 @@ export default {
       posicionesY: [25, 25],
       sentido: 1, // 0 arriba, 1 derecha, 2 abajo, 3 izquierda
       tiempoEntreMovimientos: 50,
-      teclasPulsadas: {
-        'arriba': false,
-        'derecha': false,
-        'abajo': false,
-        'izquierda': false,
-      },
       comidasPendientes: [],
     };
   },
@@ -68,6 +66,8 @@ export default {
       this.ctx.stroke();
     },
     movimiento() {
+
+      this.actualizarSentido();
 
       let posicionesXTemporales = JSON.parse(JSON.stringify(this.posicionesX));
       let posicionesYTemporales = JSON.parse(JSON.stringify(this.posicionesY));
@@ -146,6 +146,7 @@ console.log('FIN')
 
     },
     actualizarSentido() {
+      console.log('vfgdbv')
       if (this.soloUnaTeclaPulsada()) {
         if (this.teclasPulsadas.arriba && this.sentido !== 2) {
           this.sentido = 0;
@@ -167,41 +168,6 @@ console.log('FIN')
         || (!this.teclasPulsadas.arriba && !this.teclasPulsadas.derecha && this.teclasPulsadas.abajo && !this.teclasPulsadas.izquierda)
         || (!this.teclasPulsadas.arriba && !this.teclasPulsadas.derecha && !this.teclasPulsadas.abajo && this.teclasPulsadas.izquierda);
     },
-  },
-  mounted() {
-
-    window.addEventListener('keyup', (e) => {
-      if (e.key === "ArrowUp") {
-        this.teclasPulsadas.arriba = false;
-      }
-      else if (e.key === "ArrowRight") {
-        this.teclasPulsadas.derecha = false;
-      }
-      else if (e.key === "ArrowDown") {
-        this.teclasPulsadas.abajo = false;
-      }
-      else if (e.key === "ArrowLeft") {
-        this.teclasPulsadas.izquierda = false;
-      }
-      this.actualizarSentido();
-    });
-
-    window.addEventListener('keydown', (e) => {
-      if (e.key === "ArrowUp") {
-        this.teclasPulsadas.arriba = true;
-      }
-      else if (e.key === "ArrowRight") {
-        this.teclasPulsadas.derecha = true;
-      }
-      else if (e.key === "ArrowDown") {
-        this.teclasPulsadas.abajo = true;
-      }
-      else if (e.key === "ArrowLeft") {
-        this.teclasPulsadas.izquierda = true;
-      }
-      this.actualizarSentido();
-    });
-
   },
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
   <canvas id="canvas"></canvas>
   <Tablero :estado="estado" :canvas="canvas" :repintar="repintar" :infoZonaJuego="infoZonaJuego" @cambiarEstado="cambiarEstado" @cambiarDif="cambiarDif"/>
-  <Serpiente :estado="estado" :canvas="canvas" :repintar="repintar" :infoZonaJuego="infoZonaJuego" :comida="comida" @posicionSerpiente="posicionSerpiente"/>
+  <Serpiente :estado="estado" :canvas="canvas" :repintar="repintar" :infoZonaJuego="infoZonaJuego" :comida="comida" :teclasPulsadas="teclasPulsadas" @posicionSerpiente="posicionSerpiente"/>
   <Comida :estado="estado" :canvas="canvas" :repintar="repintar" :infoZonaJuego="infoZonaJuego" :serpiente="serpiente" @posicionComida="posicionComida"/>
 </template>
 
@@ -25,6 +25,12 @@ export default {
         altoTablero: 200,
         difX: 0,
         difY: 0,
+      },
+      teclasPulsadas: {
+        arriba: false,
+        derecha: false,
+        abajo: false,
+        izquierda: false,
       },
       estado: '', // '' - Sin empezar, 'iniciando' - Cuenta atrás, 'jugando' - Jugando
       repintar: 1,
@@ -61,17 +67,53 @@ export default {
     },
     inicializar() {
       this.prepararCanvas();
+      this.escucharTeclasPulsadas();
       setInterval(() => {
         this.limpiar();
         this.repintar *= -1;
       }, this.refresco);
     },
+    escucharTeclasPulsadas() {
+      window.addEventListener('keyup', (e) => {
+        
+        if (e.key === "ArrowUp") {
+          this.teclasPulsadas.arriba = false;
+        }
+        else if (e.key === "ArrowRight") {
+          this.teclasPulsadas.derecha = false;
+        }
+        else if (e.key === "ArrowDown") {
+          this.teclasPulsadas.abajo = false;
+        }
+        else if (e.key === "ArrowLeft") {
+          this.teclasPulsadas.izquierda = false;
+        }
+      });
+
+      window.addEventListener('keydown', (e) => {
+        if (e.key === "ArrowUp") {
+          this.teclasPulsadas.arriba = true;
+        }
+        else if (e.key === "ArrowRight") {
+          this.teclasPulsadas.derecha = true;
+        }
+        else if (e.key === "ArrowDown") {
+          this.teclasPulsadas.abajo = true;
+        }
+        else if (e.key === "ArrowLeft") {
+          this.teclasPulsadas.izquierda = true;
+        }
+      });
+
+    },
   },
   mounted() {
+
     this.inicializar();
     setTimeout(() => {
       this.iniciarJuego();
     }, 500);
+
   },
 }
 </script>
