@@ -3,21 +3,7 @@ export default {
   name: 'Comida',
   emits: ["posicionComida"],
   props: {
-    canvas: {
-      required: true,
-    },
-    estado: {
-      type: String,
-      required: true,
-    },
-    repintar: {
-      type: Number,
-      required: true,
-    },
-    infoZonaJuego: {
-      required: true,
-    },
-    serpiente: {
+    info: {
       required: true,
     },
   },
@@ -28,7 +14,19 @@ export default {
   },
   computed: {
     ctx() {
-      return this.canvas;
+      return this.info.canvas;
+    },
+    estado() {
+      return this.info.estado;
+    },
+    infoZonaJuego() {
+      return this.info.zonaJuego;
+    },
+    repintar() {
+      return this.info.repintar;
+    },
+    serpiente() {
+      return this.info.posiciones.serpiente;
     },
   },
   watch: {

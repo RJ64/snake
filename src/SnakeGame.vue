@@ -1,8 +1,8 @@
 <template>
   <canvas id="canvas"></canvas>
-  <Tablero :estado="estado" :canvas="canvas" :repintar="repintar" :infoZonaJuego="infoZonaJuego" @cambiarEstado="cambiarEstado" @cambiarDif="cambiarDif"/>
-  <Serpiente :estado="estado" :canvas="canvas" :repintar="repintar" :infoZonaJuego="infoZonaJuego" :comida="comida" :teclasPulsadas="teclasPulsadas" @posicionSerpiente="posicionSerpiente"/>
-  <Comida :estado="estado" :canvas="canvas" :repintar="repintar" :infoZonaJuego="infoZonaJuego" :serpiente="serpiente" @posicionComida="posicionComida"/>
+  <Tablero :info="info" @cambiarEstado="cambiarEstado" @cambiarDif="cambiarDif"/>
+  <Serpiente :info="info" @posicionSerpiente="posicionSerpiente"/>
+  <Comida :info="info" @posicionComida="posicionComida"/>
 </template>
 
 <script>
@@ -17,33 +17,42 @@ export default {
   },
   data() {
     return {
-      canvas: null,
-      refresco: 20,
-      infoZonaJuego: {
-        anchoPixelSerpiente: 4,
-        anchoTablero: 400,
-        altoTablero: 200,
-        difX: 0,
-        difY: 0,
+      info: {
+        canvas: null,
+        refresco: 20,
+        repintar: 1,
+        estado: '', // '' - Sin empezar, 'iniciando' - Cuenta atrás, 'jugando' - Jugando
+        zonaJuego: {
+          anchoPixelSerpiente: 4,
+          anchoTablero: 400,
+          altoTablero: 200,
+          difX: 0,
+          difY: 0,
+        },
+        teclasPulsadas: {
+          arriba: false,
+          derecha: false,
+          abajo: false,
+          izquierda: false,
+        },
+        posiciones: {
+          comida: null,
+          serpiente: [[11, 10], [25, 25]],
+        },
       },
-      teclasPulsadas: {
-        arriba: false,
-        derecha: false,
-        abajo: false,
-        izquierda: false,
-      },
-      estado: '', // '' - Sin empezar, 'iniciando' - Cuenta atrás, 'jugando' - Jugando
-      repintar: 1,
-      comida: null,
-      serpiente: [[11, 10], [25, 25]],
     };
+  },
+  computed: {
+    canvas() {
+      return this.info.canvas;
+    },
   },
   methods: {
     posicionComida(nuevaPosicion) {
-      this.comida = nuevaPosicion;
+      this.info.posiciones.comida = nuevaPosicion;
     },
     posicionSerpiente(nuevaPosicion) {
-      this.serpiente = nuevaPosicion;
+      this.info.posiciones.serpiente = nuevaPosicion;
     },
     limpiar() {
       this.canvas.clearRect(0, 0, window.innerWidth, window.innerHeight);
@@ -52,56 +61,56 @@ export default {
       this.cambiarEstado('iniciando');
     },
     cambiarEstado(nuevoEstado) {
-      this.estado = nuevoEstado;
+      this.info.estado = nuevoEstado;
     },
     cambiarDif(difX, difY) {
-      this.infoZonaJuego.difX = difX;
-      this.infoZonaJuego.difY = difY;
+      this.info.zonaJuego.difX = difX;
+      this.info.zonaJuego.difY = difY;
     },
     prepararCanvas() {
       var c = document.getElementById("canvas");
       var ctx = c.getContext("2d");    
       ctx.canvas.width  = window.innerWidth;
       ctx.canvas.height = window.innerHeight;
-      this.canvas = ctx;
+      this.info.canvas = ctx;
     },
     inicializar() {
       this.prepararCanvas();
       this.escucharTeclasPulsadas();
       setInterval(() => {
         this.limpiar();
-        this.repintar *= -1;
-      }, this.refresco);
+        this.info.repintar *= -1;
+      }, this.info.refresco);
     },
     escucharTeclasPulsadas() {
-      window.addEventListener('keyup', (e) => {
-        
+      window.addEventListener("keyup", (e) => {
+
         if (e.key === "ArrowUp") {
-          this.teclasPulsadas.arriba = false;
+          this.info.teclasPulsadas.arriba = false;
         }
         else if (e.key === "ArrowRight") {
-          this.teclasPulsadas.derecha = false;
+          this.info.teclasPulsadas.derecha = false;
         }
         else if (e.key === "ArrowDown") {
-          this.teclasPulsadas.abajo = false;
+          this.info.teclasPulsadas.abajo = false;
         }
         else if (e.key === "ArrowLeft") {
-          this.teclasPulsadas.izquierda = false;
+          this.info.teclasPulsadas.izquierda = false;
         }
       });
 
-      window.addEventListener('keydown', (e) => {
+      window.addEventListener("keydown", (e) => {
         if (e.key === "ArrowUp") {
-          this.teclasPulsadas.arriba = true;
+          this.info.teclasPulsadas.arriba = true;
         }
         else if (e.key === "ArrowRight") {
-          this.teclasPulsadas.derecha = true;
+          this.info.teclasPulsadas.derecha = true;
         }
         else if (e.key === "ArrowDown") {
-          this.teclasPulsadas.abajo = true;
+          this.info.teclasPulsadas.abajo = true;
         }
         else if (e.key === "ArrowLeft") {
-          this.teclasPulsadas.izquierda = true;
+          this.info.teclasPulsadas.izquierda = true;
         }
       });
 

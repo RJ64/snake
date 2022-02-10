@@ -3,25 +3,7 @@ export default {
   name: 'Serpiente',
   emits: ["posicionSerpiente"],
   props: {
-    canvas: {
-      required: true,
-    },
-    estado: {
-      type: String,
-      required: true,
-    },
-    repintar: {
-      type: Number,
-      required: true,
-    },
-    infoZonaJuego: {
-      required: true,
-    },
-    comida: {
-      required: true,
-    },
-    teclasPulsadas: {
-      type: Object,
+    info: {
       required: true,
     },
   },
@@ -29,17 +11,67 @@ export default {
     return {
       posicionesX: [11, 10],
       posicionesY: [25, 25],
-      sentido: 1, // 0 arriba, 1 derecha, 2 abajo, 3 izquierda
-      tiempoEntreMovimientos: 50,
       comidasPendientes: [],
+      tiempoEntreMovimientos: 50,
     };
   },
   computed: {
     ctx() {
-      return this.canvas;
+      return this.info.canvas;
+    },
+    estado() {
+      return this.info.estado;
+    },
+    infoZonaJuego() {
+      return this.info.zonaJuego;
+    },
+    teclasPulsadas() {
+      return this.info.teclasPulsadas;
+    },
+    repintar() {
+      return this.info.repintar;
+    },
+    comida() {
+      return this.info.posiciones.comida;
     },
     longitud() {
       return this.posicionesX.length;
+    },
+    sentido() { // 0 arriba, 1 derecha, 2 abajo, 3 izquierda
+      if (this.soloUnaTeclaPulsada()) {
+        if (this.teclasPulsadas.arriba && this.sentido !== 2) {
+          return 0;
+        }
+        if (this.teclasPulsadas.derecha && this.sentido !== 3) {
+          return 1;
+        }
+        if (this.teclasPulsadas.abajo && this.sentido !== 0) {
+          return 2;
+        }
+        if (this.teclasPulsadas.izquierda && this.sentido !== 1) {
+          return 3;
+        }
+      }
+      if (typeof this.sentido === 'undefined') {
+        return 1;
+      }
+      return this.sentido;
+    },
+    posXPuntosSerpientePintado() {
+      let array = [];
+      for (let i = 0; i < this.longitud; i++) {
+        let posXPunto = this.infoZonaJuego.difX + (this.posicionesX[i] * this.infoZonaJuego.anchoPixelSerpiente);
+        array.push(posXPunto);
+      }
+      return array;
+    },
+    posYPuntosSerpientePintado() {
+      let array = [];
+      for (let i = 0; i < this.longitud; i++) {
+        let posYPunto = this.infoZonaJuego.difY + (this.posicionesY[i] * this.infoZonaJuego.anchoPixelSerpiente);
+        array.push(posYPunto);
+      }
+      return array;
     },
   },
   watch: {
@@ -53,21 +85,41 @@ export default {
     },
   },
   methods: {
-    pintarPunto(posX, posY) {
-      let posXPunto = this.infoZonaJuego.difX + (posX * this.infoZonaJuego.anchoPixelSerpiente);
-      let posYPunto = this.infoZonaJuego.difY + (posY * this.infoZonaJuego.anchoPixelSerpiente);
-      this.ctx.fillRect(posXPunto, posYPunto, this.infoZonaJuego.anchoPixelSerpiente, this.infoZonaJuego.anchoPixelSerpiente);
-    },
     pintar() {
       this.ctx.beginPath();
       for (let i = 0; i < this.longitud; i++) {
-        this.pintarPunto(this.posicionesX[i], this.posicionesY[i]);
+        this.ctx.fillRect(this.posXPuntosSerpientePintado[i], this.posYPuntosSerpientePintado[i], this.infoZonaJuego.anchoPixelSerpiente, this.infoZonaJuego.anchoPixelSerpiente);
       }
       this.ctx.stroke();
     },
     movimiento() {
 
-      this.actualizarSentido();
+      let nuevaPosicion = this.calcularNuevaPosicion();
+      let posicionesXTemporales = nuevaPosicion[0];
+      let posicionesYTemporales = nuevaPosicion[1];
+
+      if (this.choque(posicionesXTemporales, posicionesYTemporales)) {
+console.log('FIN')
+      }
+      else {
+        
+        if (this.comida !== null && this.comida[0] === posicionesXTemporales[0] && this.comida[1] === posicionesYTemporales[0]) {
+          this.comidasPendientes.push(this.comida);
+        }
+
+        this.posicionesX = posicionesXTemporales;
+        this.posicionesY = posicionesYTemporales;
+
+        this.$emit("posicionSerpiente", [this.posicionesX, this.posicionesY]);
+
+        setTimeout(() => {
+          this.movimiento();
+        }, this.tiempoEntreMovimientos);
+
+      }
+
+    },
+    calcularNuevaPosicion() {
 
       let posicionesXTemporales = JSON.parse(JSON.stringify(this.posicionesX));
       let posicionesYTemporales = JSON.parse(JSON.stringify(this.posicionesY));
@@ -92,25 +144,7 @@ export default {
         posicionesYTemporales.unshift(posicionesYTemporales[0] + movimiento);
       }
 
-      if (this.choque(posicionesXTemporales, posicionesYTemporales)) {
-console.log('FIN')
-      }
-      else {
-        
-        if (this.comida !== null && this.comida[0] === posicionesXTemporales[0] && this.comida[1] === posicionesYTemporales[0]) {
-          this.comidasPendientes.push(this.comida);
-        }
-
-        this.posicionesX = posicionesXTemporales;
-        this.posicionesY = posicionesYTemporales;
-
-        this.$emit("posicionSerpiente", [this.posicionesX, this.posicionesY]);
-
-        setTimeout(() => {
-          this.movimiento();
-        }, this.tiempoEntreMovimientos);
-
-      }
+      return [posicionesXTemporales, posicionesYTemporales];
 
     },
     choque(posicionesX, posicionesY) {
@@ -144,23 +178,6 @@ console.log('FIN')
 
         return false;
 
-    },
-    actualizarSentido() {
-      console.log('vfgdbv')
-      if (this.soloUnaTeclaPulsada()) {
-        if (this.teclasPulsadas.arriba && this.sentido !== 2) {
-          this.sentido = 0;
-        }
-        else if (this.teclasPulsadas.derecha && this.sentido !== 3) {
-          this.sentido = 1;
-        }
-        else if (this.teclasPulsadas.abajo && this.sentido !== 0) {
-          this.sentido = 2;
-        }
-        else if (this.teclasPulsadas.izquierda && this.sentido !== 1) {
-          this.sentido = 3;
-        }
-      }
     },
     soloUnaTeclaPulsada() {
       return (this.teclasPulsadas.arriba && !this.teclasPulsadas.derecha && !this.teclasPulsadas.abajo && !this.teclasPulsadas.izquierda)

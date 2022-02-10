@@ -3,18 +3,7 @@ export default {
   name: 'Tablero',
   emits: ["cambiarEstado", "cambiarDif"],
   props: {
-    canvas: {
-      required: true,
-    },
-    estado: {
-      type: String,
-      required: true,
-    },
-    repintar: {
-      type: Number,
-      required: true,
-    },
-    infoZonaJuego: {
+    info: {
       required: true,
     },
   },
@@ -25,7 +14,16 @@ export default {
   },
   computed: {
     ctx() {
-      return this.canvas;
+      return this.info.canvas;
+    },
+    estado() {
+      return this.info.estado;
+    },
+    infoZonaJuego() {
+      return this.info.zonaJuego;
+    },
+    repintar() {
+      return this.info.repintar;
     },
     posX() {
       let pos = ((window.innerWidth - this.infoZonaJuego.anchoTablero) / 2);
